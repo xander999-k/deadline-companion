@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { useAnalyzeText, useAnalyzePDF } from "@/hooks/useAnalyze";
 import { toast } from "sonner";
+import { useDeadlines } from "@/context/DeadlineContext";
 
 export default function AddTask() {
   const [text, setText] = useState("");
   const analyzeText = useAnalyzeText();
   const analyzePDF = useAnalyzePDF();
+  const { addDeadlines } = useDeadlines();
 
   const handleTextAnalyze = async () => {
     try {
       const res = await analyzeText.mutateAsync(text);
-      console.log(res); // next step: map to UI cards
-      toast.success("Deadlines extracted");
+      addDeadlines(res.items);
+      toast.success("Deadlines added to dashboard");
     } catch {
       toast.error("Failed to analyze text");
     }
@@ -20,8 +22,8 @@ export default function AddTask() {
   const handlePDFUpload = async (file: File) => {
     try {
       const res = await analyzePDF.mutateAsync(file);
-      console.log(res);
-      toast.success("PDF analyzed");
+      addDeadlines(res.items);
+      toast.success("Deadlines added to dashboard");
     } catch {
       toast.error("Failed to analyze PDF");
     }

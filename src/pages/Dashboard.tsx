@@ -1,44 +1,62 @@
-import { useTaskStore } from '@/stores/useTaskStore';
-import { TaskCard } from '@/components/TaskCard';
-import { EmptyState } from '@/components/EmptyState';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useDeadlines } from "@/context/DeadlineContext";
+import { groupDeadlines } from "@/lib/groupDeadlines";
+import DeadlineCard from "@/components/DeadlineCard";
+import { useTheme } from "@/useTheme";
 
-export default function Dashboard() {
-  const tasks = useTaskStore((s) => s.tasks);
-  const navigate = useNavigate();
-
-  const activeTasks = tasks
-    .filter((t) => !t.completed)
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+function Section({ title, items }: any) {
+  if (!items || items.length === 0) return null;
 
   return (
-    <div className="mx-auto max-w-lg px-4 pb-24 pt-6">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground">Your upcoming deadlines</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {activeTasks.length} active {activeTasks.length === 1 ? 'task' : 'tasks'}
-        </p>
-      </header>
+    <div className="space-y-2">
+      <h2 className="text-sm font-semibold text-muted-foreground uppercase">
+        {title}
+      </h2>
 
-      {activeTasks.length === 0 ? (
-        <EmptyState />
-      ) : (
-        <div className="space-y-3">
-          {activeTasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
-          ))}
+      {items.map((d: any, i: number) => (
+        <DeadlineCard key={i} item={d} />
+      ))}
+    </div>
+  );
+}
+
+export default function Dashboard() {
+  const { deadlines } = useDeadlines();
+  const { theme, toggleTheme } = useTheme();
+
+  if (!deadlines || deadlines.length === 0) {
+    return (
+      <div className="relative min-h-screen p-6 text-center text-muted-foreground">
+        <button
+          onClick={toggleTheme}
+          className="absolute top-4 right-4 rounded-full border px-3 py-2 text-sm hover:bg-muted transition"
+        >
+          {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+        </button>
+
+        <div className="mt-24">
+          No deadlines yet.
+          <br />
+          Use the + button below.
         </div>
-      )}
+      </div>
+    );
+  }
 
-      <Button
-        onClick={() => navigate('/add')}
-        size="icon"
-        className="fixed bottom-20 right-4 z-50 h-14 w-14 rounded-full shadow-lg"
+  const grouped = groupDeadlines(deadlines);
+
+  return (
+    <div className="relative min-h-screen p-4 space-y-6 pb-24">
+      <button
+        onClick={toggleTheme}
+        className="absolute top-4 right-4 rounded-full border px-3 py-2 text-sm hover:bg-muted transition"
       >
-        <Plus className="h-6 w-6" />
-      </Button>
+        {theme === "dark" ? "☀️ Light" : "🌙 Dark"}
+      </button>
+
+      <Section title="Overdue" items={grouped.overdue} />
+      <Section title="Today" items={grouped.today} />
+      <Section title="This Week" items={grouped.week} />
+      <Section title="Later" items={grouped.later} />
     </div>
   );
 }
