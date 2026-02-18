@@ -10,11 +10,14 @@ logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
 
-# ================== CORS (PRODUCTION SAFE) ==================
+# ================== CORS (FINAL & CORRECT) ==================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # ✅ REQUIRED for Vercel + Railway
-    allow_credentials=False,  # MUST be False when allow_origins=["*"]
+    allow_origins=[
+        "https://deadline-companion-tau.vercel.app",
+        "https://deadline-companion-git-main-ibrahim-hassans-projects.vercel.app",
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -35,7 +38,7 @@ async def analyze_document(file: UploadFile = File(...)):
     file_bytes = await file.read()
     return analyze_pdf_with_ai(file_bytes, file.filename)
 
-# ================== LOCAL DEV ==================
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+# ================== HEALTH CHECK ==================
+@app.get("/")
+def root():
+    return {"status": "ok"}
