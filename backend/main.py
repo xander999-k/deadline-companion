@@ -52,3 +52,8 @@ async def analyze_document(file: UploadFile = File(...)):
     logging.info(f"Analyzing PDF: {file.filename}")
     file_bytes = await file.read()
     return analyze_pdf_with_ai(file_bytes, file.filename)
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000)
