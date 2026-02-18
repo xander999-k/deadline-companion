@@ -1,15 +1,28 @@
-import { CalendarCheck } from 'lucide-react';
+import { CalendarDays, ArrowDown } from "lucide-react";
 
 export function EmptyState() {
   return (
-    <div className="flex flex-col items-center justify-center px-8 py-20 text-center animate-fade-in">
-      <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-muted">
-        <CalendarCheck className="h-10 w-10 text-muted-foreground" />
+    <div className="flex flex-col items-center justify-center px-6 py-20 text-center animate-fade-in">
+      <div
+        className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl"
+        style={{ background: "rgb(var(--surface))", border: "1px solid rgb(var(--border))" }}
+      >
+        <CalendarDays size={28} className="text-muted" />
       </div>
-      <h2 className="mb-2 text-xl font-semibold text-foreground">No deadlines yet</h2>
-      <p className="max-w-xs text-sm text-muted-foreground">
-        Tap the + button to add your first deadline. We'll remind you before it's due.
+
+      <h2 className="text-base font-semibold text-primary mb-1">
+        No deadlines tracked
+      </h2>
+      <p className="text-sm text-secondary max-w-xs leading-relaxed">
+        Upload an audit document, contract, or paste any message — DeadlinePal will extract and track every deadline automatically.
       </p>
+
+      <div
+        className="mt-8 flex items-center gap-2 text-xs font-medium text-muted"
+      >
+        <ArrowDown size={12} />
+        Tap + to add your first deadline
+      </div>
     </div>
   );
 }

@@ -2,12 +2,22 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: "class",
-  content: [
-    "./index.html",
-    "./src/**/*.{ts,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        background: "rgb(var(--background))",
+        foreground: "rgb(var(--foreground))",
+
+        card: "rgb(var(--card))",
+        "card-foreground": "rgb(var(--card-foreground))",
+
+        muted: "rgb(var(--muted))",
+        "muted-foreground": "rgb(var(--muted-foreground))",
+
+        border: "rgb(var(--border))",
+      },
+    },
   },
   plugins: [],
 };

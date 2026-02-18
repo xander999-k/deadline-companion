@@ -1,9 +1,8 @@
 import { useTaskStore } from '@/stores/useTaskStore';
 import { getUpcomingReminders } from '@/services/notificationService';
 import { Switch } from '@/components/ui/switch';
-import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Bell, BellOff, Clock } from 'lucide-react';
+import { Bell, BellOff, Clock, ChevronRight } from 'lucide-react';
 import { format } from 'date-fns';
 
 export default function SettingsPage() {
@@ -20,70 +19,130 @@ export default function SettingsPage() {
     : [];
 
   return (
-    <div className="mx-auto max-w-lg px-4 pb-24 pt-6">
-      <header className="mb-6">
-        <h1 className="text-2xl font-bold text-foreground">Settings</h1>
-      </header>
+    <div className="min-h-screen bg-app pb-28">
 
-      {/* Global toggle */}
-      <Card className="mb-4 flex items-center justify-between p-4">
-        <div className="flex items-center gap-3">
-          {notificationsEnabled ? (
-            <Bell className="h-5 w-5 text-primary" />
-          ) : (
-            <BellOff className="h-5 w-5 text-muted-foreground" />
-          )}
-          <Label htmlFor="notifications" className="text-base font-medium cursor-pointer">
-            Notifications
-          </Label>
+      {/* HEADER */}
+      <div
+        className="sticky top-0 z-20 px-4 pt-10 pb-4"
+        style={{ background: "rgb(var(--bg))", borderBottom: "1px solid rgb(var(--border))" }}
+      >
+        <div className="flex items-center gap-2 mb-0.5">
+          <span
+            className="text-xs font-mono px-2 py-0.5 rounded"
+            style={{ background: "rgb(var(--accent-2))", color: "rgb(var(--accent))" }}
+          >
+            DEADLINEPAL
+          </span>
         </div>
-        <Switch
-          id="notifications"
-          checked={notificationsEnabled}
-          onCheckedChange={toggleNotifications}
-        />
-      </Card>
+        <h1 className="text-xl font-semibold tracking-tight text-primary">Settings</h1>
+      </div>
 
-      {/* Per-interval toggles */}
-      {notificationsEnabled && (
-        <Card className="mb-6 divide-y p-0">
-          {reminderIntervals.map((interval) => (
-            <div key={interval.id} className="flex items-center justify-between px-4 py-3">
-              <Label htmlFor={interval.id} className="text-sm cursor-pointer">
-                {interval.label}
-              </Label>
-              <Switch
-                id={interval.id}
-                checked={interval.enabled}
-                onCheckedChange={(v) => toggleReminderInterval(interval.id, v)}
-              />
-            </div>
-          ))}
-        </Card>
-      )}
+      <div className="px-4 pt-5 space-y-5">
 
-      {/* Upcoming reminders */}
-      {notificationsEnabled && upcomingReminders.length > 0 && (
-        <>
-          <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
-            <Clock className="h-4 w-4" />
-            Upcoming Reminders
-          </h2>
-          <Card className="divide-y p-0">
-            {upcomingReminders.map((r, i) => (
-              <div key={i} className="flex items-center justify-between px-4 py-3 text-sm">
-                <div className="min-w-0">
-                  <p className="truncate font-medium">{r.task.title}</p>
-                  <p className="text-xs text-muted-foreground">{r.label}</p>
-                </div>
-                <span className="shrink-0 text-muted-foreground">
-                  {format(r.date, 'MMM d, h:mm a')}
-                </span>
+        {/* Notification master toggle */}
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-2 px-0.5">
+            Notifications
+          </p>
+          <div className="card px-3.5 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className="h-8 w-8 rounded-lg flex items-center justify-center"
+                style={{
+                  background: notificationsEnabled ? "rgb(var(--accent-2))" : "rgb(var(--surface-2))",
+                }}
+              >
+                {notificationsEnabled
+                  ? <Bell size={15} style={{ color: "rgb(var(--accent))" }} />
+                  : <BellOff size={15} className="text-muted" />
+                }
               </div>
-            ))}
-          </Card>
-        </>
-      )}
+              <div>
+                <Label htmlFor="notifications" className="text-sm font-medium text-primary cursor-pointer">
+                  Push Notifications
+                </Label>
+                <p className="text-xs text-muted">
+                  {notificationsEnabled ? "Active — you'll be reminded" : "Disabled"}
+                </p>
+              </div>
+            </div>
+            <Switch
+              id="notifications"
+              checked={notificationsEnabled}
+              onCheckedChange={toggleNotifications}
+            />
+          </div>
+        </div>
+
+        {/* Reminder intervals */}
+        {notificationsEnabled && (
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-2 px-0.5">
+              Remind me before deadline
+            </p>
+            <div className="card divide-y" style={{ borderColor: "rgb(var(--border))" }}>
+              {reminderIntervals.map((interval) => (
+                <div key={interval.id} className="flex items-center justify-between px-3.5 py-3">
+                  <Label htmlFor={interval.id} className="text-sm text-primary cursor-pointer">
+                    {interval.label}
+                  </Label>
+                  <Switch
+                    id={interval.id}
+                    checked={interval.enabled}
+                    onCheckedChange={v => toggleReminderInterval(interval.id, v)}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Upcoming reminders */}
+        {notificationsEnabled && upcomingReminders.length > 0 && (
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted mb-2 px-0.5 flex items-center gap-1.5">
+              <Clock size={10} /> Scheduled Reminders
+            </p>
+            <div className="card divide-y" style={{ borderColor: "rgb(var(--border))" }}>
+              {upcomingReminders.map((r, i) => (
+                <div key={i} className="flex items-center gap-3 px-3.5 py-3">
+                  <div className="h-1.5 w-1.5 rounded-full flex-shrink-0" style={{ background: "rgb(var(--accent))" }} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-primary truncate">{r.task.title}</p>
+                    <p className="text-xs text-muted">{r.label}</p>
+                  </div>
+                  <span
+                    className="text-[11px] font-mono flex-shrink-0"
+                    style={{ color: "rgb(var(--text-3))" }}
+                  >
+                    {format(r.date, 'MMM d, h:mm a')}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* App info */}
+        <div
+          className="card px-3.5 py-3"
+          style={{ marginTop: "24px" }}
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-primary">DeadlinePal</p>
+              <p className="text-xs text-muted">Version 1.0.0 · Built for compliance teams</p>
+            </div>
+            <span
+              className="text-xs font-mono px-2 py-0.5 rounded"
+              style={{ background: "rgb(var(--surface-2))", color: "rgb(var(--text-3))" }}
+            >
+              v1.0
+            </span>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
