@@ -11,12 +11,7 @@ import {
   Type,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
-
-if (!API_BASE) {
-  throw new Error("VITE_API_BASE_URL is not defined");
-}
+import { analyzeText, analyzePDF } from "@/lib/api";
 
 export default function AddTask() {
   const { addDeadlines } = useDeadlines();
@@ -29,41 +24,23 @@ export default function AddTask() {
   const [detected, setDetected] = useState<any[]>([]);
 
   async function analyze() {
+    if (!text.trim() && !file) return;
+
     setLoading(true);
     setDetected([]);
 
     try {
-      let response: Response;
+      const data = file
+        ? await analyzePDF(file)
+        : await analyzeText(text);
 
-      if (file) {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        response = await fetch(`${API_BASE}/analyze-document`, {
-          method: "POST",
-          body: formData,
-        });
-      } else {
-        response = await fetch(`${API_BASE}/analyze-text`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ content: text }),
-        });
-      }
-
-      if (!response.ok) {
-        throw new Error("Backend error");
-      }
-
-      const data = await response.json();
-      const items = data.items || [];
-
+      const items = data.items ?? [];
       setDetected(items);
 
       if (items.length === 0) {
         toast("No deadlines found.", "info");
       }
-    } catch (err) {
+    } catch {
       toast("Failed to reach analysis server.", "error");
     } finally {
       setLoading(false);
@@ -75,109 +52,145 @@ export default function AddTask() {
     setDetected([]);
     setText("");
     setFile(null);
-    toast("Deadlines added successfully.", "success");
+    toast(`${detected.length} deadline(s) added.`, "success");
     navigate("/");
   }
 
-  const canAnalyze = !loading && (text.trim() || file);
+  const canAnalyze = !loading && (file || text.trim());
 
   return (
     <div className="min-h-screen bg-app pb-28">
-      {/* HEADER */}
-      <div className="sticky top-0 z-20 px-4 pt-10 pb-4 border-b border-base">
-        <h1 className="text-xl font-semibold text-primary">
+      <div className="sticky top-0 z-20 px-4 pt-10 pb-4 border-b border-base bg-app">
+        <span className="text-xs font-mono text-accent">DEADLINEPAL</span>
+        <h1 className="text-xl font-semibold text-primary mt-1">
           Extract Deadlines
         </h1>
-        <p className="text-xs text-secondary">
-          Paste text or upload a PDF — AI extracts deadlines.
+        <p className="text-xs text-secondary mt-1">
+          Paste text or upload a PDF. AI extracts deadlines automatically.
         </p>
       </div>
 
       <div className="px-4 pt-5 space-y-4">
-        {/* TEXT INPUT */}
+        {/* TEXT */}
         <div className="card">
-          <div className="flex items-center gap-2 px-3 py-2 border-b border-base">
-            <Type size={12} />
-            <span className="text-xs font-semibold uppercase text-muted">
-              Paste Text
-            </span>
+          <div className="flex items-center gap-2 px-3.5 py-2.5 border-b border-base">
+            <Type size={12} className="text-muted" />
+            <span className="text-xs uppercase text-muted">Paste Text</span>
           </div>
+
           <textarea
             value={text}
-            onChange={e => {
+            onChange={(e) => {
               setText(e.target.value);
               setFile(null);
             }}
             rows={6}
-            placeholder="Paste message, email, notice..."
-            className="w-full bg-transparent px-3 py-3 text-sm outline-none"
+            placeholder="Paste email, message, notice..."
+            className="w-full resize-none bg-transparent text-sm text-primary placeholder:text-muted px-3.5 py-3 focus:outline-none"
           />
         </div>
 
-        {/* FILE UPLOAD */}
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-px bg-border" />
+          <span className="text-xs font-mono text-muted">OR</span>
+          <div className="flex-1 h-px bg-border" />
+        </div>
+
+        {/* FILE */}
         <label className="block cursor-pointer">
           <input
             type="file"
             accept="application/pdf"
             className="hidden"
-            onChange={e => {
+            onChange={(e) => {
               setFile(e.target.files?.[0] ?? null);
               setText("");
             }}
           />
+
           <div className="card border-dashed">
             {file ? (
-              <div className="flex items-center gap-3 p-3">
-                <FileText size={16} />
-                <span className="truncate">{file.name}</span>
-                <button onClick={() => setFile(null)}>
-                  <X size={14} />
+              <div className="flex items-center gap-3 px-3.5 py-3">
+                <FileText size={16} className="text-accent" />
+                <div className="flex-1 truncate">
+                  <p className="text-sm text-primary truncate">
+                    {file.name}
+                  </p>
+                  <p className="text-xs text-muted">
+                    {(file.size / 1024).toFixed(0)} KB
+                  </p>
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setFile(null);
+                  }}
+                >
+                  <X size={14} className="text-muted" />
                 </button>
               </div>
             ) : (
-              <div className="flex flex-col items-center py-6 text-muted">
-                <Upload size={20} />
-                <span className="text-sm">Upload PDF</span>
+              <div className="flex flex-col items-center py-7 gap-2">
+                <Upload size={18} className="text-muted" />
+                <p className="text-sm text-secondary">
+                  Upload PDF document
+                </p>
               </div>
             )}
           </div>
         </label>
 
-        {/* ANALYZE */}
         <button
           onClick={analyze}
           disabled={!canAnalyze}
-          className="btn-accent w-full py-3 rounded-xl flex items-center justify-center gap-2"
+          className="w-full rounded-xl py-3.5 font-semibold text-white flex items-center justify-center gap-2 disabled:opacity-40"
+          style={{ background: "rgb(var(--accent))" }}
         >
-          {loading ? "Analyzing..." : <>
-            <Sparkles size={14} /> Extract Deadlines
-          </>}
+          {loading ? (
+            <>
+              <div className="h-4 w-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+              Analyzing…
+            </>
+          ) : (
+            <>
+              <Sparkles size={16} />
+              Extract Deadlines
+            </>
+          )}
         </button>
 
-        {/* RESULTS */}
         {detected.length > 0 && (
-          <div className="card">
-            <div className="px-3 py-2 border-b border-base">
-              <span className="text-xs font-semibold uppercase text-secondary">
-                {detected.length} deadlines found
+          <div className="card animate-slide-up">
+            <div className="px-3.5 py-2.5 border-b border-base flex items-center gap-2">
+              <CheckCircle2 size={14} className="text-success" />
+              <span className="text-xs uppercase text-secondary">
+                {detected.length} found
               </span>
             </div>
 
-            {detected.map((d, i) => (
-              <div key={i} className="px-3 py-2 border-b border-base">
-                <p className="text-sm font-medium">{d.title}</p>
-                {d.due_date && (
-                  <p className="text-xs text-muted">{d.due_date}</p>
-                )}
-              </div>
-            ))}
+            <div className="divide-y border-base">
+              {detected.map((d, i) => (
+                <div key={i} className="px-3.5 py-2.5">
+                  <p className="text-sm text-primary">{d.title}</p>
+                  {d.due_date && (
+                    <p className="text-xs font-mono text-muted">
+                      {d.due_date}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
 
-            <button
-              onClick={save}
-              className="btn-accent w-full py-3 mt-2 rounded-xl flex items-center justify-center gap-2"
-            >
-              Save Deadlines <ArrowRight size={14} />
-            </button>
+            <div className="p-3.5">
+              <button
+                onClick={save}
+                className="w-full rounded-lg py-3 font-semibold text-white flex items-center justify-center gap-2"
+                style={{ background: "rgb(var(--accent))" }}
+              >
+                Save All
+                <ArrowRight size={16} />
+              </button>
+            </div>
           </div>
         )}
       </div>
