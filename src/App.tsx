@@ -8,12 +8,14 @@ import { DeadlineProvider } from "@/context/DeadlineContext";
 import { ToastProvider } from "@/components/Toast";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
-import Dashboard    from "./pages/Dashboard";
-import AddTask      from "./pages/AddTask";
-import TaskDetail   from "./pages/TaskDetail";
-import SettingsPage from "./pages/SettingsPage";
-import NotFound     from "./pages/NotFound";
-import AuthPage     from "./pages/AuthPage";
+import Dashboard        from "./pages/Dashboard";
+import AddTask          from "./pages/AddTask";
+import TaskDetail       from "./pages/TaskDetail";
+import SettingsPage     from "./pages/SettingsPage";
+import NotFound         from "./pages/NotFound";
+import AuthPage         from "./pages/AuthPage";
+import HeroScreen       from "./pages/HeroScreen";
+import OnboardingScreen from "./pages/OnboardingScreen";
 
 const queryClient = new QueryClient();
 
@@ -48,24 +50,27 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
 function AppShell() {
   const { isLoggedIn, isLoading } = useAuth();
   const location = useLocation();
-  const isAuth = location.pathname === "/auth";
+  const isAuth = ["/auth", "/hero", "/onboarding"].includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-app">
       <Routes>
-        {/* Public */}
+        {/* Auth — redirect to hero if already logged in */}
         <Route
           path="/auth"
-          element={(!isLoading && isLoggedIn) ? <Navigate to="/" replace /> : <AuthPage />}
+          element={(!isLoading && isLoggedIn) ? <Navigate to="/hero" replace /> : <AuthPage />}
         />
 
         {/* Protected */}
-        <Route path="/"         element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-        <Route path="/add"      element={<PrivateRoute><AddTask /></PrivateRoute>} />
-        <Route path="/edit/:id" element={<PrivateRoute><AddTask /></PrivateRoute>} />
-        <Route path="/task/:id" element={<PrivateRoute><TaskDetail /></PrivateRoute>} />
-        <Route path="/settings" element={<PrivateRoute><SettingsPage /></PrivateRoute>} />
-        <Route path="*"         element={<NotFound />} />
+        <Route path="/hero"        element={<PrivateRoute><HeroScreen /></PrivateRoute>} />
+        <Route path="/onboarding"  element={<PrivateRoute><OnboardingScreen /></PrivateRoute>} />
+        <Route path="/dashboard"   element={<PrivateRoute><Dashboard /></PrivateRoute>} />
+        <Route path="/"            element={<PrivateRoute><Navigate to="/hero" replace /></PrivateRoute>} />
+        <Route path="/add"         element={<PrivateRoute><AddTask /></PrivateRoute>} />
+        <Route path="/edit/:id"    element={<PrivateRoute><AddTask /></PrivateRoute>} />
+        <Route path="/task/:id"    element={<PrivateRoute><TaskDetail /></PrivateRoute>} />
+        <Route path="/settings"    element={<PrivateRoute><SettingsPage /></PrivateRoute>} />
+        <Route path="*"            element={<NotFound />} />
       </Routes>
 
       {!isAuth && isLoggedIn && <BottomNav />}
