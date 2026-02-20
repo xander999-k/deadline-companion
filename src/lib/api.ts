@@ -1,8 +1,7 @@
 // src/lib/api.ts
 
-export const API_BASE =
-  import.meta.env.VITE_API_BASE ??
-  "https://deadline-companion-production.up.railway.app";
+// src/lib/api.ts
+export const API_BASE = "https://grik-ai.onrender.com";
 
 // ---- TEXT ----
 export async function analyzeText(content: string) {
