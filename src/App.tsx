@@ -17,14 +17,36 @@ import AuthPage     from "./pages/AuthPage";
 
 const queryClient = new QueryClient();
 
-/* Blocks any route if not logged in — redirects to /auth */
+// ── Auth0 config — pulled from env vars ────────────────
+const AUTH0_DOMAIN    = import.meta.env.VITE_AUTH0_DOMAIN    as string;
+const AUTH0_CLIENT_ID = import.meta.env.VITE_AUTH0_CLIENT_ID as string;
+
+// ── Guard: redirects to /auth if not logged in ─────────
 function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div style={{
+        minHeight: "100dvh", display: "flex",
+        alignItems: "center", justifyContent: "center",
+        background: "#09090B",
+      }}>
+        <div style={{
+          width: 28, height: 28, borderRadius: "50%",
+          border: "2px solid #27272A", borderTopColor: "#6366F1",
+          animation: "spin 0.7s linear infinite",
+        }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
   return isLoggedIn ? <>{children}</> : <Navigate to="/auth" replace />;
 }
 
 function AppShell() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, isLoading } = useAuth();
   const location = useLocation();
   const isAuth = location.pathname === "/auth";
 
@@ -34,7 +56,7 @@ function AppShell() {
         {/* Public */}
         <Route
           path="/auth"
-          element={isLoggedIn ? <Navigate to="/" replace /> : <AuthPage />}
+          element={(!isLoading && isLoggedIn) ? <Navigate to="/" replace /> : <AuthPage />}
         />
 
         {/* Protected */}
@@ -46,7 +68,6 @@ function AppShell() {
         <Route path="*"         element={<NotFound />} />
       </Routes>
 
-      {/* Hide bottom nav on auth screen */}
       {!isAuth && isLoggedIn && <BottomNav />}
     </div>
   );
@@ -55,7 +76,13 @@ function AppShell() {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <AuthProvider>
+      <AuthProvider
+        domain={AUTH0_DOMAIN}
+        clientId={AUTH0_CLIENT_ID}
+        authorizationParams={{
+          redirect_uri: window.location.origin,
+        }}
+      >
         <DeadlineProvider>
           <ToastProvider>
             <Toaster />
