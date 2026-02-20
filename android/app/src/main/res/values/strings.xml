@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">GRIK AI</string>
+    <string name="title_activity_main">GRIK AI</string>
+    <string name="package_name">com.grikai.app</string>
+    <string name="custom_url_scheme">com.grikai.app</string>
+</resources>
