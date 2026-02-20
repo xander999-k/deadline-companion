@@ -70,6 +70,7 @@ function AppShell() {
         <Route path="/edit/:id"    element={<PrivateRoute><AddTask /></PrivateRoute>} />
         <Route path="/task/:id"    element={<PrivateRoute><TaskDetail /></PrivateRoute>} />
         <Route path="/settings"    element={<PrivateRoute><SettingsPage /></PrivateRoute>} />
+
         <Route path="*"            element={<NotFound />} />
       </Routes>
 
