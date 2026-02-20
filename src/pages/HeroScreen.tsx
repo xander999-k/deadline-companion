@@ -42,7 +42,7 @@ export default function HeroScreen() {
           </svg>
         </div>
         <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px", color: "#FAFAFA", letterSpacing: "0.08em" }}>
-          DEADLINEPAL
+          GRIK AI
         </span>
       </div>
 
