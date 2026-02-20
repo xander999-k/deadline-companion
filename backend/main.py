@@ -14,7 +14,7 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://deadline-companion-tau.vercel.app",
+        "https://grik-ai.vercel.app",
         "http://localhost:5173",   # local dev
         "http://localhost:8081",   # local dev alt
     ],
