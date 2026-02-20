@@ -56,7 +56,7 @@ export default function AddTask() {
             className="text-xs font-mono px-2 py-0.5 rounded"
             style={{ background: "rgb(var(--accent-2))", color: "rgb(var(--accent))" }}
           >
-            DEADLINEPAL
+            
           </span>
         </div>
         <h1 className="text-xl font-semibold tracking-tight text-primary">

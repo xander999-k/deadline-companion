@@ -14,7 +14,7 @@ export function EmptyState() {
         No deadlines tracked
       </h2>
       <p className="text-sm text-secondary max-w-xs leading-relaxed">
-        Upload an audit document, contract, or paste any message — DeadlinePal will extract and track every deadline automatically.
+        Upload an audit document, contract, or paste any message — GRIK AI will extract and track every deadline automatically.
       </p>
 
       <div

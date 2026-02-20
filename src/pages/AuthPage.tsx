@@ -81,7 +81,7 @@ export default function AuthPage() {
               fontFamily: "'DM Mono', monospace", fontSize: "13px",
               fontWeight: 500, color: "#FAFAFA", letterSpacing: "0.08em",
             }}>
-              DEADLINEPAL
+              GRIK AI
             </span>
           </div>
 

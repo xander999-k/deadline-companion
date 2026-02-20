@@ -31,7 +31,7 @@ export default function SettingsPage() {
             className="text-xs font-mono px-2 py-0.5 rounded"
             style={{ background: "rgb(var(--accent-2))", color: "rgb(var(--accent))" }}
           >
-            DEADLINEPAL
+           GRIK AI
           </span>
         </div>
         <h1 className="text-xl font-semibold tracking-tight text-primary">Settings</h1>
@@ -130,7 +130,7 @@ export default function SettingsPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-primary">DeadlinePal</p>
+              <p className="text-sm font-medium text-primary">GRIK AI</p>
               <p className="text-xs text-muted">Version 1.0.0 · Built for compliance teams</p>
             </div>
             <span

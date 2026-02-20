@@ -64,7 +64,7 @@ export default function Dashboard() {
                 className="text-xs font-mono px-2 py-0.5 rounded"
                 style={{ background: "rgb(var(--accent-2))", color: "rgb(var(--accent))" }}
               >
-                DEADLINEPAL
+                GRIK AI
               </span>
               {overdueCount > 0 && (
                 <span
