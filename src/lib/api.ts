@@ -1,26 +1,16 @@
-// src/lib/api.ts
+// ─── swap this one line when your Render URL changes ───
+const API_BASE = import.meta.env.VITE_API_URL ?? "https://grik-ai.onrender.com";
 
-// src/lib/api.ts
-export const API_BASE = "https://grik-ai.onrender.com";
-
-// ---- TEXT ----
 export async function analyzeText(content: string) {
   const res = await fetch(`${API_BASE}/analyze-text`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ content }),
   });
-
-  if (!res.ok) {
-    throw new Error("Failed to analyze text");
-  }
-
+  if (!res.ok) throw new Error(`Server error ${res.status}`);
   return res.json();
 }
 
-// ---- PDF ----
 export async function analyzePDF(file: File) {
   const formData = new FormData();
   formData.append("file", file);
@@ -29,10 +19,6 @@ export async function analyzePDF(file: File) {
     method: "POST",
     body: formData,
   });
-
-  if (!res.ok) {
-    throw new Error("Failed to analyze PDF");
-  }
-
+  if (!res.ok) throw new Error(`Server error ${res.status}`);
   return res.json();
 }

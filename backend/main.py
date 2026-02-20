@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, Response
+from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import logging
@@ -15,6 +15,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://deadline-companion-tau.vercel.app",
+        "http://localhost:5173",   # local dev
+        "http://localhost:8081",   # local dev alt
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -26,6 +28,12 @@ class TextInput(BaseModel):
     content: str
 
 # ================== ROUTES ==================
+
+# Health check — Render needs this to confirm service is alive
+@app.get("/")
+async def health():
+    return {"status": "ok", "service": "DeadlinePal API"}
+
 @app.post("/analyze-text", response_model=ExtractionResult)
 async def analyze_text(input: TextInput):
     return analyze_text_with_ai(input.content)
