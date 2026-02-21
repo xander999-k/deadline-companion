@@ -26,12 +26,12 @@ export default function HeroScreen() {
         pointerEvents: "none",
       }} />
 
-      {/* Logo */}
-      <div style={{ marginBottom: "40px" }}>
-        <Logo size={40} />
+      {/* Logo — centered, larger */}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "40px" }}>
+        <Logo size={64} />
       </div>
 
-      <div style={{ flex: 1, animation: "heroIn 0.5s cubic-bezier(0.22,1,0.36,1) both" }}>
+      <div style={{ flex: 1, animation: "heroIn 0.5s cubic-bezier(0.22,1,0.36,1) both", textAlign: "center" }}>
 
         <div style={{
           display: "inline-flex", alignItems: "center", gap: "7px",
@@ -40,7 +40,7 @@ export default function HeroScreen() {
         }}>
           <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22C55E", display: "inline-block", animation: "pulse 2s infinite" }} />
           <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "11px", color: "#818CF8", letterSpacing: "0.06em" }}>
-            FREE FOREVER · NO CREDIT CARD
+            FREE · NO CREDIT CARD
           </span>
         </div>
 
