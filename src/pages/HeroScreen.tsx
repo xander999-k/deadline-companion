@@ -115,7 +115,7 @@ export default function HeroScreen() {
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "8px", marginTop: "24px" }}>
           {[
             { val: "∞", lbl: "Deadlines", color: "#6366F1" },
-            { val: "Free", lbl: "Forever",   color: "#22C55E" },
+            { val: "Free", lbl: "",   color: "#22C55E" },
             { val: "AI",   lbl: "Powered",   color: "#F59E0B" },
           ].map((s, i) => (
             <div key={i} style={{
