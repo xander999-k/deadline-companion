@@ -4,6 +4,7 @@ import DeadlineCard from "@/components/DeadlineCard";
 import { EmptyState } from "@/components/EmptyState";
 import { useTheme } from "@/useTheme";
 import { Sun, Moon, AlertTriangle, Clock, Calendar, LayoutGrid } from "lucide-react";
+import { Logo } from "@/components/Logo";
 
 function SectionHeader({ title, count, icon: Icon, color }: any) {
   return (
@@ -60,12 +61,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-0.5">
-              <span
-                className="text-xs font-mono px-2 py-0.5 rounded"
-                style={{ background: "rgb(var(--accent-2))", color: "rgb(var(--accent))" }}
-              >
-                GRIK AI
-              </span>
+              <Logo size={28} />
               {overdueCount > 0 && (
                 <span
                   className="text-xs font-mono px-2 py-0.5 rounded flex items-center gap-1"

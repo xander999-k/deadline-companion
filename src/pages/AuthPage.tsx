@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { ArrowRight } from "lucide-react";
+import { Logo } from "@/components/Logo";
 
 /* ── Google SVG ── */
 const GoogleIcon = () => (
@@ -61,28 +62,8 @@ export default function AuthPage() {
       }}>
         {/* Logo */}
         <div style={{ textAlign: "center", marginBottom: "40px" }}>
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: "8px", marginBottom: "20px",
-          }}>
-            <div style={{
-              width: "32px", height: "32px", borderRadius: "8px",
-              background: "linear-gradient(135deg, #6366F1, #818CF8)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              boxShadow: "0 0 24px rgba(99,102,241,0.4)",
-            }}>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-                <rect x="3" y="4" width="18" height="18" rx="2"/>
-                <line x1="16" y1="2" x2="16" y2="6"/>
-                <line x1="8" y1="2" x2="8" y2="6"/>
-                <line x1="3" y1="10" x2="21" y2="10"/>
-              </svg>
-            </div>
-            <span style={{
-              fontFamily: "'DM Mono', monospace", fontSize: "13px",
-              fontWeight: 500, color: "#FAFAFA", letterSpacing: "0.08em",
-            }}>
-              GRIK AI
-            </span>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
+            <Logo size={44} />
           </div>
 
           <h1 style={{

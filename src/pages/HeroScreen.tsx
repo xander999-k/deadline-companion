@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { Logo } from "@/components/Logo";
 
 export default function HeroScreen() {
   const navigate = useNavigate();
@@ -18,7 +19,6 @@ export default function HeroScreen() {
       display: "flex", flexDirection: "column",
       padding: "60px 24px 120px", position: "relative", overflow: "hidden",
     }}>
-      {/* Ambient glow */}
       <div style={{
         position: "fixed", top: "-100px", left: "50%", transform: "translateX(-50%)",
         width: "500px", height: "500px", borderRadius: "50%",
@@ -26,30 +26,13 @@ export default function HeroScreen() {
         pointerEvents: "none",
       }} />
 
-      {/* Logo row */}
-      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "40px" }}>
-        <div style={{
-          width: "28px", height: "28px", borderRadius: "7px",
-          background: "linear-gradient(135deg, #6366F1, #818CF8)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          boxShadow: "0 0 20px rgba(99,102,241,0.35)",
-        }}>
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round">
-            <rect x="3" y="4" width="18" height="18" rx="2"/>
-            <line x1="16" y1="2" x2="16" y2="6"/>
-            <line x1="8" y1="2" x2="8" y2="6"/>
-            <line x1="3" y1="10" x2="21" y2="10"/>
-          </svg>
-        </div>
-        <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "12px", color: "#FAFAFA", letterSpacing: "0.08em" }}>
-          GRIK AI
-        </span>
+      {/* Logo */}
+      <div style={{ marginBottom: "40px" }}>
+        <Logo size={40} />
       </div>
 
-      {/* Content — matches HTML prototype exactly */}
       <div style={{ flex: 1, animation: "heroIn 0.5s cubic-bezier(0.22,1,0.36,1) both" }}>
 
-        {/* Live badge */}
         <div style={{
           display: "inline-flex", alignItems: "center", gap: "7px",
           background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)",
@@ -103,7 +86,6 @@ export default function HeroScreen() {
           Skip to Dashboard
         </button>
 
-        {/* Feature pills — identical to HTML prototype */}
         <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "32px" }}>
           {[
             { icon: "📄", title: "Paste anything", sub: "Emails, WhatsApp, notices, contracts" },
@@ -130,12 +112,11 @@ export default function HeroScreen() {
           ))}
         </div>
 
-        {/* Stats row */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "8px", marginTop: "24px" }}>
           {[
             { val: "∞", lbl: "Deadlines", color: "#6366F1" },
-            { val: "Free", lbl: "Forever", color: "#22C55E" },
-            { val: "AI", lbl: "Powered", color: "#F59E0B" },
+            { val: "Free", lbl: "Forever",   color: "#22C55E" },
+            { val: "AI",   lbl: "Powered",   color: "#F59E0B" },
           ].map((s, i) => (
             <div key={i} style={{
               background: "#141417", border: "1px solid #27272A",
